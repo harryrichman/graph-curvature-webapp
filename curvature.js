@@ -151,95 +151,7 @@ $(document).ready(function() {
       edges[i].data('pol', '#aaaaaa');
     }
 
-    if (curveType == 6) {
-      for (i = 0; i < numV; i++) {
-        for (j = 0; j < numV; j++) {
-          if (i == j) continue;
-          if (typeof json["AM"][i] === "undefined") continue;
-          if (json["AM"][i][j] == 0) continue;
-          //only connected i,j left
-          selected_edges = cy.edges('[source="' + nodes[i].data().id +
-            '"][target="' + nodes[j].data().id + '"]')
-          if (selected_edges.length == 1) {
-            ORC = Math.round(json["ORC"][i][j] * 1000) / 1000
-            selected_edges[0].data('ecurve', ORC);
-            if (ORC < 0) {
-              selected_edges[0].data('pol', "#8888ef");
-            } else if (ORC > 0) {
-              selected_edges[0].data('pol', "#ef8888");
-            } else {
-              selected_edges[0].data('pol', "#aaaaaa");
-            }
-          }
-        }
-      }
-    } else if (curveType == 8) {
-      for (i = 0; i < numV; i++) {
-        for (j = 0; j < numV; j++) {
-          if (i == j) continue;
-          if (typeof json["AM"][i] === "undefined") continue;
-          if (json["AM"][i][j] == 0) continue;
-          //only connected i,j left
-          selected_edges = cy.edges('[source="' + nodes[i].data().id +
-            '"][target="' + nodes[j].data().id + '"]')
-          if (selected_edges.length == 1) {
-            ORCI = Math.round(json["ORCI"][i][j] * 1000) / 1000
-            selected_edges[0].data('ecurve', ORCI);
-            if (ORCI < 0) {
-              selected_edges[0].data('pol', "#8888ef");
-            } else if (ORCI > 0) {
-              selected_edges[0].data('pol', "#ef8888");
-            } else {
-              selected_edges[0].data('pol', "#aaaaaa");
-            }
-          }
-        }
-      }
-    } else if (curveType == 9) {
-      for (i = 0; i < numV; i++) {
-        for (j = 0; j < numV; j++) {
-          if (i == j) continue;
-          if (typeof json["AM"][i] === "undefined") continue;
-          if (json["AM"][i][j] == 0) continue;
-          //only connected i,j left
-          selected_edges = cy.edges('[source="' + nodes[i].data().id +
-            '"][target="' + nodes[j].data().id + '"]')
-          if (selected_edges.length == 1) {
-            LLYC = Math.round(json["LLYC"][i][j] * 1000) / 1000
-            selected_edges[0].data('ecurve', LLYC);
-            if (LLYC < 0) {
-              selected_edges[0].data('pol', "#8888ef");
-            } else if (LLYC > 0) {
-              selected_edges[0].data('pol', "#ef8888");
-            } else {
-              selected_edges[0].data('pol', "#aaaaaa");
-            }
-          }
-        }
-      }
-    } else if (curveType == 10) {
-      for (i = 0; i < numV; i++) {
-        for (j = 0; j < numV; j++) {
-          if (i == j) continue;
-          if (typeof json["AM"][i] === "undefined") continue;
-          if (json["AM"][i][j] == 0) continue;
-          //only connected i,j left
-          selected_edges = cy.edges('[source="' + nodes[i].data().id +
-            '"][target="' + nodes[j].data().id + '"]')
-          if (selected_edges.length == 1) {
-            LLYC = Math.round(json["NNLLYC"][i][j] * 1000) / 1000
-            selected_edges[0].data('ecurve', LLYC);
-            if (LLYC < 0) {
-              selected_edges[0].data('pol', "#8888ef");
-            } else if (LLYC > 0) {
-              selected_edges[0].data('pol', "#ef8888");
-            } else {
-              selected_edges[0].data('pol', "#aaaaaa");
-            }
-          }
-        }
-      }
-    } else if (curveType == 14) {
+    if (curveType == 14) { // link resistance curvature
       for (i = 0; i < numV; i++) {
         for (j = 0; j < numV; j++) {
           if (i == j) continue;
@@ -261,24 +173,15 @@ $(document).ready(function() {
           }
         }
       }
-    } else {
+    } else { // node-based curvature
       for (i = 0; i < numV; i++) {
         id = nodes[i].data().id;
+        console.log("data id: " + id); // debugging
         vs = V.indexOf(id);
+        console.log("vertex id vs: " + vs); // debugging
         if (curveType == 0) {
           nodes[i].data('curve', 'v' + vs);
           nodes[i].data('pol', '#000000');
-        } else if (curveType == 1 || curveType == 2) {
-          if (json[vs] > 0) {
-            nodes[i].data('curve', "+");
-            nodes[i].data('pol', '#e01818');
-          } else if (json[vs] < 0) {
-            nodes[i].data('curve', "-");
-            nodes[i].data('pol', '#1818e0');
-          } else {
-            nodes[i].data('curve', "0");
-            nodes[i].data('pol', '#000000');
-          }
         } else {
           nodes[i].data('curve', json[vs]);
           if (json[vs] < 0) {
@@ -309,7 +212,7 @@ $(document).ready(function() {
         cy.nodes("[weight>0]")[0].data('curve', "");
         return;
       }
-      if (curveType == 0) {
+      if (curveType == 0) { // vertex label
         cy.nodes("[weight>0]")[0].data('curve', "v0");
         return;
       } else {
@@ -325,17 +228,6 @@ $(document).ready(function() {
     $(".spinner").remove();
     document.getElementById('cy').appendChild(spinner.el);
 
-    var dimNval;
-    dimNval = $("#dimN").val();
-    if (dimNval == "" || typeof dimNval === "undefined") {
-      dimNval = "2";
-    }
-    var idleNval;
-    idleNval = $("#idleN").val();
-    if (idleNval == "" || typeof idleNval === "undefined") {
-      idleNval = "0";
-    }
-
     $.ajax({
       method: "POST",
       url: "https://" + graphURL,
@@ -343,8 +235,8 @@ $(document).ready(function() {
         am: AMstring,
         v: Vstring,
         t: curveType,
-        d: dimNval,
-        idlen: idleNval
+        d: "2",
+        idlen: "0"
       },
       dataType: 'json',
       success: function(json) {

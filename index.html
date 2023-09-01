@@ -188,7 +188,7 @@
         </div>
         <div style="font-weight: 300;font-size: 12px;">
           David Cushing<br>
-	  Erin Law<br>
+	        Erin Law<br>
           Ben Snodgrass<br> 
           George Stagg<br>
           Includes the graph visualisation software <a href="https://github.com/cytoscape/cytoscape.js">cytoscape.js</a> (MIT Licenced).
@@ -201,26 +201,19 @@
     <div style="font-weight: 600;" id="adm">
     <form style="margin:0;"  onsubmit="return false">
         <select id="curveType" name="curveType">
-                <option value="0">Vertex Number</option>
-                <option selected value="3">Non-normalised Curvature</option>
-                <option value="5">Non-Normalised Curvature with Finite Dimension</option>
-                <option value="7">Normalised Curvature with Finite Dimension</option>
-                <option value="4">Normalised Curvature</option>
-                <option value="6">Ollivier-Ricci Curvature</option>
-                <option value="8">Ollivier-Ricci Curvature with Idleness</option>
-                <option value="9">Lin-Lu-Yau Curvature</option>
-                <option value="10">Non-normalised Lin-Lu-Yau Curvature</option>
-                <option value="11">Steinerberger Curvature</option>
-		<option value="12">Ricci Flatness</option>
-		<option value="13">Node Resistance Curvature</option>
-		<option value="14">Link Resistance Curvature</option>
+          <option value="0">Vertex Label</option>
+          <option value="11">Ottolini-Steinerberger Curvature</option>
+	      	<option selected value="13">Node Resistance Curvature</option>
+		      <option value="14">Link Resistance Curvature</option>
         </select>
         <input type="text" id="dimN" name="dimN" size="1" placeholder="2"></input>
         <input type="text" id="idleN" name="idleN" size="1" placeholder="0"></input>
     </form><hr>
-    <div>Adjacency Matrix&nbsp;<a id="admhideshow" href="javascript:void(0)">[Show]</a></div>
+    <div>Adjacency Matrix <a id="admhideshow" href="javascript:void(0)">[Show]</a></div>
     <div id="admjsoncontainer">
-      <div style="font-weight: 300;" id="admjson">[]</div>
+      <div style="font-weight: 300;" id="admjson">
+        <pre>[]</pre>
+      </div>
     </div>
     <script src="spin.min.js"></script>
     <script type="text/javascript">
