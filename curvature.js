@@ -176,9 +176,9 @@ $(document).ready(function() {
     } else { // node-based curvature
       for (i = 0; i < numV; i++) {
         id = nodes[i].data().id;
-        console.log("data id: " + id); // debugging
+        // console.log("data id: " + id); // debugging
         vs = V.indexOf(id);
-        console.log("vertex id vs: " + vs); // debugging
+        // console.log("vertex id vs: " + vs); // debugging
         if (curveType == 0) {
           nodes[i].data('curve', 'v' + vs);
           nodes[i].data('pol', '#000000');
@@ -330,7 +330,7 @@ $(document).ready(function() {
     if (n1 != n2) { //if not the same
       var e = cy.$("node#" + n1);
       var j = cy.$("node#" + n2);
-      if (e.edgesWith(j).length == 0) { //if no other edges
+      if (e.edgesWith(j).length == 0) { // if edge doesn't exist yet
         console.log("Connecting...");
         cy.add([{
           group: "edges",
@@ -346,9 +346,12 @@ $(document).ready(function() {
         nodeid = nodeid + 1;
         getlabels();
         pushStateToStack();
+      } else {
+        console.log("No change, edge already exists")
       }
+    } else {
+      console.log("No change, same node selected")
     }
-    getlabels();
   }
 
   function addNodeAt(xloc, yloc) {
