@@ -204,6 +204,27 @@ $(document).ready(function() {
     }
   }
 
+  function getVertexLabels() {
+    curveType = $("#curveType").val();
+    if (curveType != 0) {
+      console.log("Error occurred; vertex labels generated with other type set")
+    }
+    if (cy.nodes("[weight>0]").length == 1) {
+      cy.nodes("[weight>0]")[0].data('pol', "#000000");
+      if (showLabels == 0) {
+        cy.nodes("[weight>0]")[0].data('curve', "");
+        return;
+      }
+      if (curveType == 0) { // vertex label
+        cy.nodes("[weight>0]")[0].data('curve', "v0");
+        return;
+      } else {
+        cy.nodes("[weight>0]")[0].data('curve', "0");
+        return;
+      }
+    }
+  }
+
   function getlabels() {
     curveType = $("#curveType").val();
     if (cy.nodes("[weight>0]").length == 1) {
@@ -220,86 +241,95 @@ $(document).ready(function() {
         return;
       }
     }
-    buildAM();
-    if (typeof(spinner) != "undefined") {
-      spinner.stop();
+    if (curveType == 0) {
+      // fill in
+      for (i = 0; i < cy.nodes("[weight>0]").length; i++) {
+        cy.nodes("[weight>0]")[i].data('curve', "v" + i);
+      }
     }
-    var spinner = new Spinner(opts).spin();
-    $(".spinner").remove();
-    document.getElementById('cy').appendChild(spinner.el);
-
-    $.ajax({
-      method: "POST",
-      url: "https://" + graphURL,
-      data: {
-        am: AMstring,
-        v: Vstring,
-        t: curveType,
-        d: "2",
-        idlen: "0"
-      },
-      dataType: 'json',
-      success: function(json) {
-        var patt = new RegExp("error");
-        var err = patt.test(json[0]);
-        if (!err) {
-          updateLabels(json);
-          spinner.stop();
-        } else {
-          if (json[0] == "error8") {
-            nodes = cy.nodes("[weight>0]");
-            for (i = 0; i < nodes.length; i++) {
-              nodes[i].data('curve', '-∞');
-            }
-          }
-          if (json[0] == "error8b") {
-            nodes = cy.nodes("[weight>0]");
-            for (i = 0; i < nodes.length; i++) {
-              nodes[i].data('curve', 'NaN');
-            }
-          }
-          if (json[0] == "error13a") {
-            nodes = cy.edges();
-            for (i = 0; i < nodes.length; i++) {
-              nodes[i].data('ecurve', 'NaN');
-              nodes[i].data('pol', '#aaaaaaa');
-            }
-            nodes = cy.nodes("[weight>0]");
-            for (i = 0; i < nodes.length; i++) {
-              nodes[i].data('pol', '#000000');
-            }
-          }
-          if (json[0] == "error13b") {
-            nodes = cy.edges();
-            for (i = 0; i < nodes.length; i++) {
-              nodes[i].data('ecurve', '0');
-              nodes[i].data('pol', '#aaaaaa');
-            }
-            nodes = cy.nodes("[weight>0]");
-            for (i = 0; i < nodes.length; i++) {
-              nodes[i].data('pol', '#000000');
-            }
-          }
-          if (json[0] == "error13c") {
-            nodes = cy.edges();
-            for (i = 0; i < nodes.length; i++) {
-              nodes[i].data('ecurve', 'NaN');
-              nodes[i].data('pol', '#aaaaaa');
-            }
-            nodes = cy.nodes("[weight>0]");
-            for (i = 0; i < nodes.length; i++) {
-              nodes[i].data('pol', '#000000');
-            }
-          }
-
-          spinner.stop();
-        }
-      },
-      error: function(json) {
-        console.log("ERROR: " + JSON.stringify(json));
+    else {
+      buildAM();
+      if (typeof(spinner) != "undefined") {
         spinner.stop();
       }
-    });
+      var spinner = new Spinner(opts).spin();
+      $(".spinner").remove();
+      document.getElementById('cy').appendChild(spinner.el);
+
+      $.ajax({
+        method: "POST",
+        url: "https://" + graphURL,
+        data: {
+          am: AMstring,
+          v: Vstring,
+          t: curveType,
+          d: "2",
+          idlen: "0"
+        },
+        dataType: 'json',
+        success: function(json) {
+          var patt = new RegExp("error");
+          var err = patt.test(json[0]);
+          if (!err) {
+            updateLabels(json);
+            spinner.stop();
+          } else {
+            if (json[0] == "error8") {
+              nodes = cy.nodes("[weight>0]");
+              for (i = 0; i < nodes.length; i++) {
+                nodes[i].data('curve', '-∞');
+              }
+            }
+            if (json[0] == "error8b") {
+              nodes = cy.nodes("[weight>0]");
+              for (i = 0; i < nodes.length; i++) {
+                nodes[i].data('curve', 'NaN');
+              }
+            }
+            if (json[0] == "error13a") {
+              nodes = cy.edges();
+              for (i = 0; i < nodes.length; i++) {
+                nodes[i].data('ecurve', 'NaN');
+                nodes[i].data('pol', '#aaaaaaa');
+              }
+              nodes = cy.nodes("[weight>0]");
+              for (i = 0; i < nodes.length; i++) {
+                nodes[i].data('pol', '#000000');
+              }
+            }
+            if (json[0] == "error13b") {
+              nodes = cy.edges();
+              for (i = 0; i < nodes.length; i++) {
+                nodes[i].data('ecurve', '0');
+                nodes[i].data('pol', '#aaaaaa');
+              }
+              nodes = cy.nodes("[weight>0]");
+              for (i = 0; i < nodes.length; i++) {
+                nodes[i].data('pol', '#000000');
+              }
+            }
+            if (json[0] == "error13c") {
+              nodes = cy.edges();
+              for (i = 0; i < nodes.length; i++) {
+                nodes[i].data('ecurve', 'NaN');
+                nodes[i].data('pol', '#aaaaaa');
+              }
+              nodes = cy.nodes("[weight>0]");
+              for (i = 0; i < nodes.length; i++) {
+                nodes[i].data('pol', '#000000');
+              }
+            }
+
+            spinner.stop();
+          }
+        },
+        error: function(json) {
+          console.log("ERROR: " + JSON.stringify(json));
+          spinner.stop();
+        }
+      });
+    }
+
   }
 
   function popStateFromStack() {
